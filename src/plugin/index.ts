@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
 import { waitForElement } from '../utils/waitForElement'
 
-export default function viteMonkeyUtilsPlugin(): Plugin<any> {
+export default function viteMonkeyUtilsPlugin(): Plugin {
   const virtualModuleId = 'virtual:monkey-utils'
   const resolvedVirtualModuleId = `\0${virtualModuleId}`
   return {
