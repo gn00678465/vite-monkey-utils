@@ -30,7 +30,8 @@
     "dev": "tsdown --watch",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm build",
+    "prepare": "pnpm build"
   },
   "peerDependencies": {
     "vite": "^7.2.4"
