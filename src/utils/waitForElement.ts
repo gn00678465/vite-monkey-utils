@@ -1,4 +1,4 @@
-interface WaitForElementOptions {
+interface WaitForElementOptions<T extends Element = Element> {
   /** 超時時間（毫秒），預設 10000 */
   timeout?: number
   /** 觀察的父元素，預設 document.body */
@@ -8,24 +8,24 @@ interface WaitForElementOptions {
   /** 是否只等待可見元素，預設 false */
   visible?: boolean
   /** 自定義條件函數 */
-  condition?: (element: Element) => boolean
+  condition?: (element: T) => boolean
 }
 
 // function overloads
-export function waitForElement(
+export function waitForElement<T extends Element = Element>(
   selector: string,
-  options: WaitForElementOptions & { multiple: true },
-): Promise<Element[]>
+  options: WaitForElementOptions<T> & { multiple: true },
+): Promise<T[]>
 
-export function waitForElement(
+export function waitForElement<T extends Element = Element>(
   selector: string,
-  options?: WaitForElementOptions & { multiple?: false },
-): Promise<Element>
+  options?: WaitForElementOptions<T> & { multiple?: false },
+): Promise<T>
 
-export function waitForElement(
+export function waitForElement<T extends Element = Element>(
   selector: string,
-  options: WaitForElementOptions = {},
-): Promise<Element | Element[]> {
+  options: WaitForElementOptions<T> = {},
+): Promise<T | T[]> {
   const {
     timeout = 10000,
     parent = document.body,
@@ -37,36 +37,36 @@ export function waitForElement(
   return new Promise((resolve, reject) => {
     let timeoutId: NodeJS.Timeout
     // 檢查元素的函數
-    const checkElement = (): Element | Element[] | null => {
-      let elements: Element | Element[] | null
+    const checkElement = (): T | T[] | null => {
+      let elements: T | T[] | null
 
       if (multiple) {
-        const nodeList = document.querySelectorAll(selector)
+        const nodeList = document.querySelectorAll<T>(selector)
         elements = Array.from(nodeList)
-        if ((elements as Element[]).length === 0)
+        if ((elements as T[]).length === 0)
           return null
       }
       else {
-        elements = document.querySelector(selector)
+        elements = document.querySelector<T>(selector)
         if (!elements)
           return null
       }
 
       // 檢查可見性
       if (visible) {
-        const isVisible = (el: Element): boolean => {
+        const isVisible = (el: T): boolean => {
           const rect = el.getBoundingClientRect()
           return rect.width > 0 && rect.height > 0
             && window.getComputedStyle(el).visibility !== 'hidden'
         }
 
         if (multiple) {
-          elements = (elements as Element[]).filter(isVisible)
-          if ((elements as Element[]).length === 0)
+          elements = (elements as T[]).filter(isVisible)
+          if ((elements as T[]).length === 0)
             return null
         }
         else {
-          if (!isVisible(elements as Element))
+          if (!isVisible(elements as T))
             return null
         }
       }
@@ -74,12 +74,12 @@ export function waitForElement(
       // 檢查自定義條件
       if (condition) {
         if (multiple) {
-          elements = (elements as Element[]).filter(condition)
-          if ((elements as Element[]).length === 0)
+          elements = (elements as T[]).filter(condition)
+          if ((elements as T[]).length === 0)
             return null
         }
         else {
-          if (!condition(elements as Element))
+          if (!condition(elements as T))
             return null
         }
       }
