@@ -7,6 +7,9 @@
   "author": "Author Name <author.name@mail.com>",
   "license": "MIT",
   "homepage": "https://github.com/gn00678465/vite-monkey-utils#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gn00678465/vite-monkey-utils.git"
